@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>نظام إدارة الاستبيانات المرضية للحقليات الكبيرة - 39 صفحة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{font-family:"Segoe UI",Tahoma,Arial,Helvetica,sans-serif}
+        :root{--primary:#2c3e50;--secondary:#3498db;--accent:#e74c3c;--light:#ecf0f1;--dark:#2c3e50;--success:#2ecc71;--warning:#f39c12;--danger:#e74c3c;--employee:#9b59b6;--view-only:#7f8c8d}
+        body{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);color:#333;line-height:1.6;min-height:100vh;padding:20px}
+        .container{max-width:1400px;width:100%;margin:0 auto}
+        header{background:var(--primary);color:#fff;padding:1.5rem;text-align:center;border-radius:10px;margin-bottom:20px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+        h1{font-size:2rem;margin-bottom:10px}
+        .description{font-size:1.05rem;opacity:.9}
+        .card{background:#fff;padding:22px;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,.06);margin-bottom:22px;position:relative}
+        .section-title{color:var(--primary);margin-bottom:18px;text-align:center;font-size:1.35rem;padding-bottom:8px;border-bottom:2px solid var(--secondary)}
+        label{display:block;margin-bottom:8px;font-weight:700;color:var(--dark)}
+        input,select,button{font-size:15px}
+        input,select{width:100%;padding:10px 12px;border:1.8px solid #ddd;border-radius:8px}
+        input:focus,select:focus{outline:none;border-color:var(--secondary)}
+        button{background:var(--secondary);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+        button i{margin-left:6px}
+        button:hover{transform:translateY(-2px)}
+        .btn-success{background:var(--success)}.btn-warning{background:var(--warning)}.btn-danger{background:var(--danger)}.btn-info{background:var(--secondary)}
+        .hidden{display:none}
+        .tabs{display:flex;justify-content:center;margin-bottom:18px;gap:8px;flex-wrap:wrap}
+        .tab{padding:10px 18px;background:#fff;border-radius:8px;border:1px solid #ddd;cursor:pointer;font-weight:700}
+        .tab.active{background:var(--primary);color:#fff}
+        .table-container{background:#fff;border-radius:10px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:14px}
+        .survey-table{width:100%;border-collapse:collapse;font-size:14px}
+        .survey-table th,.survey-table td{border:1px solid #ddd;padding:8px;text-align:center}
+        .survey-table th{background:var(--primary);color:#fff}
+        .survey-table tr:nth-child(even){background:#fafafa}
+        .survey-table input{width:90px;padding:6px;text-align:center;border-radius:4px;border:1px solid #ddd}
+        .status-cell{font-weight:700;padding:6px;border-radius:6px}
+        .status-completed{background:#d4edda;color:#155724}
+        .status-partial{background:#fff3cd;color:#856404}
+        .status-not-completed{background:#f8d7da;color:#721c24}
+        .page-tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}
+        .page-tab{padding:6px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer}
+        .page-tab.active{background:var(--secondary);color:#fff}
+        .small{font-size:13px;padding:6px 8px}
+        .user-info-bar{background:var(--light);padding:10px;border-radius:8px;margin-bottom:12px;display:flex;justify-content:space-between;gap:8px}
+        .user-role{padding:6px 10px;border-radius:20px;font-weight:700}
+        .role-admin{background:var(--accent);color:#fff}.role-employee{background:var(--employee);color:#fff}
+        .info-message,.success-message,.error-message{padding:10px;border-radius:6px;margin:10px 0;text-align:center}
+        .info-message{background:#d1ecf1;color:#0c5460}
+        .success-message{background:#d4edda;color:#155724}
+        .error-message{background:#f8d7da;color:#721c24}
+        .owner-badge{font-size:12px;color:#444;margin-top:6px}
+        @media (max-width:768px){.survey-table input{width:64px}.page-tabs{justify-content:flex-start}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>نظام إدارة الاستبيانات المرضية للحقليات الكبيرة</h1>
+        <p class="description">شهر تموز - بغداد ٢٦٥٠٢ - الأمراض متعددة الصفحات (39 صفحة)</p>
+    </header>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="login">تسجيل الدخول</div>
+        <div class="tab hidden" data-tab="employee">لوحة الموظف</div>
+        <div class="tab hidden" data-tab="admin">لوحة الإدارة</div>
+    </div>
+
+    <!-- تسجيل دخول -->
+    <section id="loginSection" class="card">
+        <h2 class="section-title">تسجيل الدخول للنظام</h2>
+        <div id="loginMessage" class="hidden"></div>
+        <div class="form-group">
+            <label for="username">اسم المستخدم:</label>
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم" value="admin">
+        </div>
+        <div class="form-group">
+            <label for="password">كلمة المرور:</label>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور" value="admin123">
+        </div>
+        <button id="loginBtn">تسجيل الدخول <i class="fas fa-sign-in-alt"></i></button>
+        <div class="info-message" style="margin-top:12px">يمكنك استخدام: المسؤول: <strong>admin/admin123</strong> أو الموظف: <strong>employee/employee123</strong></div>
+    </section>
+
+    <!-- لوحة الموظف -->
+    <section id="employeeSection" class="card hidden">
+        <button id="employeeLogout" class="btn-danger" style="position:absolute;left:16px;top:16px">تسجيل الخروج <i class="fas fa-sign-out-alt"></i></button>
+        <div class="user-info-bar">
+            <div>
+                <span id="employeeWelcome">مرحباً، </span>
+                <span class="user-role role-employee" id="employeeRole">موظف</span>
+            </div>
+            <div id="lastSaveInfo">آخر تحديث: غير متاح</div>
+        </div>
+
+        <h2 class="section-title">لوحة الموظف - إدخال بيانات الحيوانات (صفحات متعددة)</h2>
+        <div class="permission-hint info-message"><i class="fas fa-edit"></i> يمكنك إدخال وتعديل البيانات لصفحة محددة فقط. القيم التي أدخلها موظفون آخرون تظهر لك كقراءات مقفلة (غير قابلة للتعديل).</div>
+
+        <div style="margin:12px 0; text-align:center">
+            <div class="page-tabs" id="employeePageTabs"></div>
+        </div>
+
+        <div id="employeeTablesWrapper">
+            <!-- سيتم إدراج الجداول هنا ديناميكيًا -->
+        </div>
+
+        <div class="action-buttons" style="justify-content:center;margin-top:8px">
+            <button id="saveEmployeeData" class="btn-success">حفظ الصفحة الحالية <i class="fas fa-save"></i></button>
+            <button id="refreshDataBtn" class="btn-info">تحديث البيانات <i class="fas fa-sync-alt"></i></button>
+        </div>
+    </section>
+
+    <!-- لوحة المسؤول -->
+    <section id="adminSection" class="card hidden">
+        <button id="adminLogout" class="btn-danger" style="position:absolute;left:16px;top:16px">تسجيل الخروج <i class="fas fa-sign-out-alt"></i></button>
+
+        <div class="user-info-bar">
+            <div>
+                <span id="adminWelcome">مرحباً، </span>
+                <span class="user-role role-admin" id="adminRole">مسؤول</span>
+            </div>
+            <div id="adminLastSaveInfo">آخر تحديث: غير متاح</div>
+        </div>
+
+        <h2 class="section-title">لوحة تحكم المسؤول - عرض الجداول</h2>
+
+        <div class="stats-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:12px">
+            <div class="stat-card"><div class="stat-number" id="totalEmployees">0</div><div class="stat-title">عدد الموظفين</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalInfected">0</div><div class="stat-title">إجمالي المصابين</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalTreated">0</div><div class="stat-title">إجمالي المعالجين</div></div>
+            <div class="stat-card"><div class="stat-number" id="archivedUsers">0</div><div class="stat-title">المستخدمين المؤرشفين</div></div>
+        </div>
+
+        <div style="text-align:center;margin-bottom:8px">
+            <div class="page-tabs" id="adminPageTabs"></div>
+        </div>
+
+        <div class="table-container">
+            <h3 class="table-title">نظرة عامة على الصفحة الحالية</h3>
+            <table class="survey-table">
+                <thead>
+                    <tr>
+                        <th>م</th>
+                        <th>نوع الحيوان</th>
+                        <th>اسم المرض</th>
+                        <th>إجمالي المصابين</th>
+                        <th>إجمالي المعالجين</th>
+                    </tr>
+                </thead>
+                <tbody id="adminOverviewTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons" style="justify-content:center">
+            <button id="generateReportBtn" class="btn-info">إنشاء تقرير PDF (الصفحة الحالية) <i class="fas fa-file-pdf"></i></button>
+            <button id="exportExcelBtn" class="btn-success">تصدير Excel (لكل الصفحات) <i class="fas fa-file-excel"></i></button>
+            <button id="exportDataBtn" class="btn-success">تصدير بيانات (كل الصفحات) <i class="fas fa-download"></i></button>
+            <button id="importDataBtn" class="btn-warning">استيراد البيانات <i class="fas fa-upload"></i></button>
+            <button id="resetSystemBtn" class="btn-danger">إعادة ضبط النظام <i class="fas fa-redo"></i></button>
+        </div>
+
+        <div class="archive-section" style="margin-top:18px">
+            <h3 style="color:var(--primary)">إدارة الموظفين</h3>
+            <div class="form-group"><label>اسم المستخدم الجديد:</label><input id="newUsername" type="text"></div>
+            <div class="form-group"><label>كلمة المرور:</label><input id="newPassword" type="password"></div>
+            <div class="form-group"><label>اسم الموظف الكامل:</label><input id="employeeFullName" type="text"></div>
+            <div class="action-buttons"><button id="addEmployeeBtn">إضافة موظف جديد <i class="fas fa-user-plus"></i></button></div>
+            <h4 style="margin-top:14px">قائمة الموظفين النشطين</h4>
+            <div id="employeesContainer"></div>
+            <h4 style="margin-top:14px">أرشيف الموظفين</h4>
+            <div id="archiveContainer"></div>
+        </div>
+    </section>
+
+    <div id="autoSaveIndicator" class="success-message" style="display:none;position:fixed;right:18px;bottom:18px">تم الحفظ تلقائياً</div>
+</div>
+
+<script>
+/* --- بيانات وأساليب ثابتة --- */
+const animals = ["أغنام","ماعز","أبقار","جاموس","كلاب","أسد","قطط","خيول","غزال","أرانب"];
+const diseaseNames = [
+    "الحمى القلاعية FMD",
+    "Pox Virus جدري",
+    "orf",
+    "داء الكلاب Raibies",
+    "اشتباه MCF",
+    "طاعون المجترات الصغيرة P.P.R",
+    "الأسهال الفايروسي البقري BVD",
+    "طاعون الكلاب Canine Paravovirus",
+    "التهاب الجلد العقدي LSD",
+    "مرض إضافي 10",
+    "مرض إضافي 11",
+    "مرض إضافي 12",
+    "مرض إضافي 13",
+    "مرض إضافي 14",
+    "مرض إضافي 15",
+    "مرض إضافي 16",
+    "مرض إضافي 17",
+    "مرض إضافي 18",
+    "مرض إضافي 19",
+    "مرض إضافي 20",
+    "مرض إضافي 21",
+    "مرض إضافي 22",
+    "مرض إضافي 23",
+    "مرض إضافي 24",
+    "مرض إضافي 25",
+    "مرض إضافي 26",
+    "مرض إضافي 27",
+    "مرض إضافي 28",
+    "مرض إضافي 29",
+    "مرض إضافي 30",
+    "مرض إضافي 31",
+    "مرض إضافي 32",
+    "مرض إضافي 33",
+    "مرض إضافي 34",
+    "مرض إضافي 35",
+    "مرض إضافي 36",
+    "مرض إضافي 37",
+    "مرض إضافي 38",
+    "مرض إضافي 39"
+];
+const PAGES = diseaseNames.length; // الآن 39 صفحة
+
+/* الباقي من الكود كما في النسخة السابقة (الترحيل، الحفظ، العرض، التسجيل، إلخ) */
+
+let users = {};
+let surveys = {};
+let archivedUsers = {};
+let currentUser = null;
+let currentEmployeePage = 0;
+let currentAdminPage = 0;
+let autoSaveTimer = null;
+
+/* DOM */
+const loginSection = document.getElementById('loginSection');
+const employeeSection = document.getElementById('employeeSection');
+const adminSection = document.getElementById('adminSection');
+const loginBtn = document.getElementById('loginBtn');
+const employeeLogout = document.getElementById('employeeLogout');
+const adminLogout = document.getElementById('adminLogout');
+const saveEmployeeDataBtn = document.getElementById('saveEmployeeData');
+const refreshDataBtn = document.getElementById('refreshDataBtn');
+const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+const generateReportBtn = document.getElementById('generateReportBtn');
+const exportExcelBtn = document.getElementById('exportExcelBtn');
+const exportDataBtn = document.getElementById('exportDataBtn');
+const importDataBtn = document.getElementById('importDataBtn');
+const resetSystemBtn = document.getElementById('resetSystemBtn');
+const employeeTablesWrapper = document.getElementById('employeeTablesWrapper');
+const employeePageTabs = document.getElementById('employeePageTabs');
+const adminPageTabs = document.getElementById('adminPageTabs');
+const adminOverviewTableBody = document.getElementById('adminOverviewTableBody');
+const employeesContainer = document.getElementById('employeesContainer');
+const archiveContainer = document.getElementById('archiveContainer');
+const lastSaveInfo = document.getElementById('lastSaveInfo');
+const adminLastSaveInfo = document.getElementById('adminLastSaveInfo');
+const employeeWelcome = document.getElementById('employeeWelcome');
+const adminWelcome = document.getElementById('adminWelcome');
+const totalEmployeesElem = document.getElementById('totalEmployees');
+const totalInfectedElem = document.getElementById('totalInfected');
+const totalTreatedElem = document.getElementById('totalTreated');
+const archivedUsersElem = document.getElementById('archivedUsers');
+
+/* --- بنية البيانات و migration --- */
+function createEmptyPage(pageIndex){
+    return animals.map((animal, idx) => ({
+        id: idx+1,
+        animal,
+        disease: diseaseNames[pageIndex] || 'غير محدد',
+        infected: '0',
+        treated: '0',
+        status: 'غير مكتمل',
+        owner: null,
+        locked: false
+    }));
+}
+function initSurveysStructure(){ const pages=[]; for(let p=0;p<PAGES;p++) pages.push(createEmptyPage(p)); return pages; }
+
+function migrateSinglePageArrayToPages(arr){
+    const pages = [];
+    for(let p=0;p<PAGES;p++){
+        if(p===0){
+            const page = animals.map((animal, idx) => {
+                const old = arr[idx] || {};
+                const infectedVal = String(Math.max(0, parseInt(old.infected) || 0));
+                const treatedVal = String(Math.max(0, parseInt(old.treated) || 0));
+                const status = (infectedVal !== '0' && treatedVal !== '0') ? 'مكتمل' : (infectedVal !== '0' || treatedVal !== '0') ? 'جزئي' : 'غير مكتمل';
+                return {
+                    id: idx+1,
+                    animal,
+                    disease: diseaseNames[0],
+                    infected: infectedVal,
+                    treated: treatedVal,
+                    status,
+                    owner: (infectedVal !== '0' || treatedVal !== '0') ? 'migrated' : null,
+                    locked: (infectedVal !== '0' || treatedVal !== '0') ? true : false
+                };
+            });
+            pages.push(page);
+        } else pages.push(createEmptyPage(p));
+    }
+    return pages;
+}
+function migrateLegacyObject(obj){
+    if(!obj) return initSurveysStructure();
+    if(Array.isArray(obj)) return migrateSinglePageArrayToPages(obj);
+    if(Array.isArray(obj.default)) return migrateSinglePageArrayToPages(obj.default);
+    return initSurveysStructure();
+}
+function ensureUserHasPages(username){
+    const val = surveys[username];
+    if(Array.isArray(val) && val.length===PAGES) return;
+    if(Array.isArray(val) && val.length===animals.length){ surveys[username]=migrateSinglePageArrayToPages(val); return; }
+    if(typeof val === 'object' && val !== null){ surveys[username]=migrateLegacyObject(val); return; }
+    surveys[username]=initSurveysStructure();
+}
+
+/* --- حفظ/تحميل --- */
+function updateLocalStorage(){ localStorage.setItem('surveyUsers', JSON.stringify(users)); localStorage.setItem('surveyData', JSON.stringify(surveys)); localStorage.setItem('archivedUsers', JSON.stringify(archivedUsers)); }
+function loadData(){
+    try{
+        const localUsers = JSON.parse(localStorage.getItem('surveyUsers')) || {};
+        const localSurveys = JSON.parse(localStorage.getItem('surveyData')) || {};
+        const localArchived = JSON.parse(localStorage.getItem('archivedUsers')) || {};
+        users = Object.keys(localUsers).length? localUsers : {"admin":{password:"admin123",role:"admin",fullName:"المسؤول العام",joinDate:new Date().toLocaleDateString('ar-EG')},"employee":{password:"employee123",role:"employee",fullName:"موظف تجريبي",joinDate:new Date().toLocaleDateString('ar-EG')}};
+        archivedUsers = localArchived;
+        surveys = {};
+        if(Object.keys(localSurveys).length){
+            for(const u of Object.keys(localSurveys)){
+                const val = localSurveys[u];
+                if(Array.isArray(val) && val.length===PAGES){
+                    surveys[u] = val.map(page => page.map(item => ({
+                        id: item.id || 0,
+                        animal: item.animal || '',
+                        disease: item.disease || '',
+                        infected: String(item.infected || '0'),
+                        treated: String(item.treated || '0'),
+                        status: item.status || 'غير مكتمل',
+                        owner: item.owner || null,
+                        locked: !!item.locked
+                    })));
+                } else surveys[u] = migrateLegacyObject(val);
+            }
+        }
+        Object.keys(users).forEach(u=>{
+            if(!surveys[u]) surveys[u]=initSurveysStructure();
+            else if(!Array.isArray(surveys[u]) || surveys[u].length!==PAGES) surveys[u]=migrateLegacyObject(surveys[u]);
+        });
+        if(Object.keys(surveys).length===0){ surveys['default']=initSurveysStructure(); Object.keys(users).forEach(u=>{ if(u!=='default') surveys[u]=initSurveysStructure(); }); }
+        const lastSave = localStorage.getItem('lastSaveTime');
+        if(lastSave){ lastSaveInfo.textContent = `آخر تحديث: ${lastSave}`; adminLastSaveInfo.textContent = `آخر تحديث: ${lastSave}`; }
+        updateLocalStorage();
+    }catch(e){ console.error('خطأ في تحميل البيانات',e); }
+}
+function saveData(){
+    const now = new Date();
+    const saveTime = now.toLocaleTimeString('ar-EG') + ' ' + now.toLocaleDateString('ar-EG');
+    localStorage.setItem('lastSaveTime', saveTime);
+    lastSaveInfo.textContent = `آخر تحديث: ${saveTime}`; adminLastSaveInfo.textContent = `آخر تحديث: ${saveTime}`;
+    updateLocalStorage(); showAutoSave(); updateStats();
+}
+function showAutoSave(){ const el = document.getElementById('autoSaveIndicator'); el.style.display='block'; setTimeout(()=>el.style.display='none',1400); }
+
+/* --- دالة جديدة مهمة: تعطي العنصر \"الفعلّي\" للعرض --- */
+function getEffectiveCell(pageIndex, id){
+    for(const u of Object.keys(surveys)){
+        if(u==='default') continue;
+        const pages = surveys[u];
+        if(!pages || !pages[pageIndex]) continue;
+        const it = pages[pageIndex].find(x=>x.id===id);
+        if(it && it.owner && it.locked){
+            return {sourceUser: u, item: {...it}};
+        }
+    }
+    if(currentUser && surveys[currentUser] && surveys[currentUser][pageIndex]){
+        const it = surveys[currentUser][pageIndex].find(x=>x.id===id);
+        if(it) return {sourceUser: currentUser, item: {...it}};
+    }
+    if(surveys['default'] && surveys['default'][pageIndex]){
+        const it = surveys['default'][pageIndex].find(x=>x.id===id);
+        if(it) return {sourceUser: 'default', item: {...it}};
+    }
+    return {sourceUser: null, item: {id, animal: animals[id-1], disease: diseaseNames[pageIndex], infected:'0', treated:'0', status:'غير مكتمل', owner:null, locked:false}};
+}
+
+/* --- عرض الجداول للموظف --- */
+function renderEmployeeTables(){
+    employeeTablesWrapper.innerHTML = '';
+    if(currentUser && !surveys[currentUser]) surveys[currentUser] = initSurveysStructure();
+    ensureUserHasPages(currentUser);
+    Object.keys(users).forEach(u=>{ if(!surveys[u]) surveys[u]=initSurveysStructure(); });
+
+    for(let pIndex=0; pIndex<PAGES; pIndex++){
+        const box = document.createElement('div');
+        box.className = 'table-container';
+        box.id = `employee-page-${pIndex}`;
+        box.style.display = (pIndex===currentEmployeePage)?'block':'none';
+        box.innerHTML = `
+            <h3 class="table-title">صفحة ${pIndex+1} - ${diseaseNames[pIndex]}</h3>
+            <table class="survey-table">
+                <thead>
+                    <tr><th>م</th><th>نوع الحيوان</th><th>اسم المرض</th><th>عدد المصابين</th><th>عدد المعالجين</th><th>الحالة</th></tr>
+                </thead>
+                <tbody id="emp-tbody-${pIndex}"></tbody>
+            </table>
+        `;
+        employeeTablesWrapper.appendChild(box);
+        const tbody = box.querySelector(`#emp-tbody-${pIndex}`);
+        for(let i=0;i<animals.length;i++){
+            const id = i+1;
+            const effective = getEffectiveCell(pIndex, id);
+            const owner = effective.item.owner;
+            const locked = effective.item.locked;
+            const ownedByOther = owner && owner !== currentUser && locked;
+            const infectedVal = effective.item.infected || '0';
+            const treatedVal = effective.item.treated || '0';
+            const statusClass = effective.item.status==='مكتمل'?'status-completed':effective.item.status==='جزئي'?'status-partial':'status-not-completed';
+            const ownerBadge = owner ? `<div class="owner-badge">أدخلها: ${owner}${locked ? ' (مقفل)' : ''}</div>` : '';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${id}</td>
+                <td>${animals[i]}</td>
+                <td>${diseaseNames[pIndex]}</td>
+                <td><input type="number" ${ownedByOther ? 'readonly disabled' : ''} id="infected-${pIndex}-${id}" value="${infectedVal}" min="0"></td>
+                <td><input type="number" ${ownedByOther ? 'readonly disabled' : ''} id="treated-${pIndex}-${id}" value="${treatedVal}" min="0"></td>
+                <td><div id="status-${pIndex}-${id}" class="status-cell ${statusClass}">${effective.item.status}</div>${ownerBadge}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+    markActivePageTabs(employeePageTabs, currentEmployeePage);
+}
+
+/* --- حفظ الصفحة الحالية --- */
+function saveEmployeePageData(){
+    if(!currentUser || users[currentUser].role !== 'employee') return;
+    const pageIndex = currentEmployeePage;
+    if(!surveys[currentUser]) surveys[currentUser]=initSurveysStructure();
+    ensureUserHasPages(currentUser);
+    const pageArr = surveys[currentUser][pageIndex];
+    for(let idx=0; idx<pageArr.length; idx++){
+        const item = pageArr[idx];
+        let lockedByOther = false;
+        for(const u of Object.keys(surveys)){
+            if(u==='default') continue;
+            if(!surveys[u] || !surveys[u][pageIndex]) continue;
+            const other = surveys[u][pageIndex].find(it => it.id === item.id);
+            if(other && other.owner && other.owner !== currentUser && other.locked){
+                lockedByOther = true;
+                item.infected = other.infected;
+                item.treated = other.treated;
+                item.status = other.status;
+                item.owner = other.owner;
+                item.locked = other.locked;
+                break;
+            }
+        }
+        if(lockedByOther) continue;
+        const infEl = document.getElementById(`infected-${pageIndex}-${item.id}`);
+        const trtEl = document.getElementById(`treated-${pageIndex}-${item.id}`);
+        if(!infEl || !trtEl) continue;
+        const infectedVal = String(Math.max(0, Number(infEl.value) || 0));
+        const treatedVal = String(Math.max(0, Number(trtEl.value) || 0));
+        let status = 'غير مكتمل';
+        if(infectedVal !== '0' && treatedVal !== '0') status = 'مكتمل';
+        else if(infectedVal !== '0' || treatedVal !== '0') status = 'جزئي';
+        if(infectedVal === '0' && treatedVal === '0'){
+            item.infected = '0';
+            item.treated = '0';
+            item.status = 'غير مكتمل';
+            item.owner = null;
+            item.locked = false;
+        } else {
+            item.infected = infectedVal;
+            item.treated = treatedVal;
+            item.status = status;
+            item.owner = currentUser;
+            item.locked = true;
+        }
+        const statusEl = document.getElementById(`status-${pageIndex}-${item.id}`);
+        if(statusEl){ statusEl.textContent = item.status; statusEl.className = 'status-cell ' + (item.status==='مكتمل'?'status-completed':item.status==='جزئي'?'status-partial':'status-not-completed'); }
+    }
+    saveData();
+    renderEmployeeTables();
+    alert('تم حفظ الصفحة الحالية. القيم المدخلة مقفلة للموظفين الآخرين.');
+}
+
+/* --- عرض المسؤول: الجمع عبر كل المستخدمين --- */
+function renderAdminOverview(pageIndex){
+    adminOverviewTableBody.innerHTML = '';
+    const totals = {};
+    for(let i=0;i<animals.length;i++) totals[i+1] = {id:i+1, animal:animals[i], disease:diseaseNames[pageIndex], infected:0, treated:0};
+    Object.keys(surveys).forEach(u=>{
+        if(u==='default') return;
+        const pages = surveys[u];
+        if(!Array.isArray(pages) || !pages[pageIndex]) return;
+        pages[pageIndex].forEach(row=>{
+            totals[row.id].infected += parseInt(row.infected)||0;
+            totals[row.id].treated += parseInt(row.treated)||0;
+        });
+    });
+    Object.values(totals).forEach(item=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${item.id}</td><td>${item.animal}</td><td>${item.disease}</td><td>${item.infected}</td><td>${item.treated}</td>`;
+        adminOverviewTableBody.appendChild(tr);
+    });
+    markActivePageTabs(adminPageTabs, pageIndex);
+}
+
+/* --- إحصائيات ومساعدة عرض الموظفين --- */
+function updateStats(){
+    const employeeCount = Object.values(users).filter(u=>u.role==='employee').length;
+    totalEmployeesElem.textContent = employeeCount;
+    let totInf=0, totTrt=0;
+    Object.keys(surveys).forEach(u=>{
+        if(u==='default') return;
+        surveys[u].forEach(page=> page.forEach(r=>{ totInf += parseInt(r.infected)||0; totTrt += parseInt(r.treated)||0; }));
+    });
+    totalInfectedElem.textContent = totInf; totalTreatedElem.textContent = totTrt;
+    archivedUsersElem.textContent = Object.keys(archivedUsers).length;
+}
+
+function updateEmployeesDisplay(){
+    employeesContainer.innerHTML=''; archiveContainer.innerHTML='';
+    const employeeUsers = Object.entries(users).filter(([k,v])=>v.role==='employee');
+    if(employeeUsers.length===0) employeesContainer.innerHTML='<p>لا يوجد موظفين مسجلين بعد</p>';
+    employeeUsers.forEach(([username,user])=>{
+        const div=document.createElement('div'); div.className='user-item';
+        div.innerHTML = `<div class="user-info"><div><strong>${user.fullName}</strong> (${username})</div><div style="color:#666">موظف منذ: ${user.joinDate}</div></div><div class="action-buttons"><button class="btn-danger small" onclick="deleteEmployee('${username}')">حذف <i class='fas fa-trash'></i></button></div>`;
+        employeesContainer.appendChild(div);
+    });
+    const archived = Object.entries(archivedUsers);
+    if(archived.length===0) archiveContainer.innerHTML='<p>لا يوجد موظفين محذوفين</p>';
+    archived.forEach(([username,user])=>{
+        const div=document.createElement('div'); div.className='user-item';
+        div.innerHTML = `<div class="user-info"><div><strong>${user.fullName}</strong> (${username})</div><div style="color:#666">محذوف منذ: ${user.deleteDate}</div></div><div class="action-buttons"><button class="btn-success small" onclick="restoreEmployee('${username}')">استعادة <i class='fas fa-undo'></i></button></div>`;
+        archiveContainer.appendChild(div);
+    });
+}
+
+/* --- وظائف الموظفين والإدارة --- */
+window.deleteEmployee = function(username){
+    if(username===currentUser){ alert('لا يمكن حذف حسابك الخاص'); return; }
+    if(confirm('هل أنت متأكد من حذف هذا الموظف؟')){
+        archivedUsers[username] = {...users[username], deleteDate:new Date().toLocaleDateString('ar-EG')};
+        delete users[username]; delete surveys[username];
+        saveData(); updateEmployeesDisplay(); updateStats();
+    }
+}
+window.restoreEmployee = function(username){
+    if(confirm('هل أنت متأكد من استعادة هذا الموظف؟')){
+        users[username] = {...archivedUsers[username]}; delete users[username].deleteDate;
+        surveys[username] = initSurveysStructure();
+        delete archivedUsers[username]; saveData(); updateEmployeesDisplay(); updateStats();
+    }
+}
+
+addEmployeeBtn.addEventListener('click', ()=>{
+    const newUsername = document.getElementById('newUsername').value.trim();
+    const newPassword = document.getElementById('newPassword').value.trim();
+    const fullName = document.getElementById('employeeFullName').value.trim();
+    if(!newUsername||!newPassword||!fullName){ alert('يرجى ملء جميع الحقول'); return; }
+    if(users[newUsername]){ alert('اسم المستخدم موجود مسبقاً'); return; }
+    users[newUsername] = {password:newPassword, role:'employee', fullName, joinDate:new Date().toLocaleDateString('ar-EG')};
+    surveys[newUsername] = initSurveysStructure();
+    saveData(); updateEmployeesDisplay(); updateStats(); alert('تم إضافة الموظف بنجاح');
+    document.getElementById('newUsername').value='';document.getElementById('newPassword').value='';document.getElementById('employeeFullName').value='';
+});
+
+/* --- تسجيل الدخول --- */
+loginBtn.addEventListener('click', ()=>{
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if(!username||!password){ alert('يرجى ملء جميع الحقول'); return; }
+    if(users[username] && users[username].password===password){
+        currentUser = username;
+        if(!surveys[currentUser]) surveys[currentUser] = initSurveysStructure();
+        ensureUserHasPages(currentUser);
+        if(users[username].role==='admin'){ activateTab('admin'); adminWelcome.textContent = users[username].fullName; }
+        else { activateTab('employee'); employeeWelcome.textContent = users[username].fullName; }
+        renderEmployeeTables(); renderAdminOverview(currentAdminPage); updateEmployeesDisplay(); updateStats();
+        alert('تم تسجيل الدخول بنجاح');
+    } else alert('بيانات الدخول غير صحيحة');
+});
+employeeLogout.addEventListener('click', ()=>{ currentUser=null; activateTab('login'); document.getElementById('username').value='admin'; document.getElementById('password').value='admin123'; });
+adminLogout.addEventListener('click', ()=>{ currentUser=null; activateTab('login'); document.getElementById('username').value='admin'; document.getElementById('password').value='admin123'; });
+
+/* --- تبويب --- */
+function activateTab(tabName){
+    document.querySelectorAll('.tab').forEach(t=>{ if(t.dataset.tab===tabName){ t.classList.remove('hidden'); t.classList.add('active'); } else { t.classList.add('hidden'); t.classList.remove('active'); } });
+    if(tabName==='login'){ loginSection.classList.remove('hidden'); employeeSection.classList.add('hidden'); adminSection.classList.add('hidden'); }
+    else if(tabName==='employee'){ loginSection.classList.add('hidden'); employeeSection.classList.remove('hidden'); adminSection.classList.add('hidden'); renderEmployeeTables(); }
+    else if(tabName==='admin'){ loginSection.classList.add('hidden'); employeeSection.classList.add('hidden'); adminSection.classList.remove('hidden'); renderAdminOverview(currentAdminPage); }
+}
+
+/* --- تبويبات الصفحات --- */
+function buildPageTabs(container, onSelect){ container.innerHTML=''; for(let i=0;i<PAGES;i++){ const btn=document.createElement('button'); btn.className='page-tab small'; btn.textContent = `الصفحة ${i+1}` + ` - ${diseaseNames[i]}`; btn.dataset.page = i; btn.addEventListener('click', ()=> onSelect(i)); container.appendChild(btn); } }
+function markActivePageTabs(container, pageIndex){ container.querySelectorAll('.page-tab').forEach(b=>{b.classList.toggle('active', Number(b.dataset.page)===pageIndex);}); }
+buildPageTabs(employeePageTabs, (p)=> switchEmployeePage(p));
+buildPageTabs(adminPageTabs, (p)=>{ currentAdminPage=p; renderAdminOverview(p); });
+
+/* --- ربط الأزرار --- */
+saveEmployeeDataBtn.addEventListener('click', saveEmployeePageData);
+refreshDataBtn.addEventListener('click', ()=>{ renderEmployeeTables(); alert('تم تحديث العرض'); });
+
+generateReportBtn.addEventListener('click', ()=>{
+    const p = currentAdminPage;
+    const rows = [];
+    const totals = {};
+    for(let i=0;i<animals.length;i++) totals[i+1] = {id:i+1, animal:animals[i], disease:diseaseNames[p], infected:0, treated:0};
+    Object.keys(surveys).forEach(u=>{ if(u==='default') return; surveys[u][p].forEach(r=>{ totals[r.id].infected += parseInt(r.infected)||0; totals[r.id].treated += parseInt(r.treated)||0; }); });
+    Object.values(totals).forEach(it=> rows.push(`<tr><td>${it.id}</td><td>${it.animal}</td><td>${it.disease}</td><td>${it.infected}</td><td>${it.treated}</td></tr>`));
+    const printContent = `<div dir="rtl"><h1 style="text-align:center">تقرير - الصفحة ${p+1} - ${diseaseNames[p]}</h1><table border="1" style="width:100%;border-collapse:collapse"><thead><tr><th>م</th><th>نوع الحيوان</th><th>اسم المرض</th><th>عدد المصابين</th><th>عدد المعالجين</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+    const w = window.open('','_blank'); w.document.write(`<html><head><title>تقرير</title><style>body{font-family:Arial;direction:rtl}</style></head><body>${printContent}</body></html>`); w.document.close(); setTimeout(()=>w.print(),300);
+});
+
+exportExcelBtn.addEventListener('click', ()=>{
+    const wb = XLSX.utils.book_new();
+    for(let p=0;p<PAGES;p++){
+        const aoa = [['م','نوع الحيوان','اسم المرض','عدد المصابين','عدد المعالجين','المالك','مقفل؟']];
+        Object.keys(surveys).forEach(u=>{ if(u==='default') return; aoa.push([`بيانات الموظف: ${users[u]?.fullName||u}`]); surveys[u][p].forEach(r=> aoa.push([r.id,r.animal,r.disease,r.infected,r.treated,r.owner||'', r.locked? 'نعم':'لا'])); aoa.push([]); });
+        const ws = XLSX.utils.aoa_to_sheet(aoa); XLSX.utils.book_append_sheet(wb, ws, `صفحة_${p+1}`);
+    }
+    XLSX.writeFile(wb, `الاستبيانات_الكل_${new Date().toISOString().split('T')[0]}.xlsx`);
+    alert('تم تصدير Excel لكل الصفحات');
+});
+
+exportDataBtn.addEventListener('click', ()=>{
+    const dataStr = JSON.stringify({users,surveys,archivedUsers}, null, 2);
+    const uri = 'data:application/json;charset=utf-8,'+encodeURIComponent(dataStr);
+    const link = document.createElement('a'); link.href=uri; link.download = `backup_${new Date().toISOString().split('T')[0]}.json`; link.click(); alert('تم تصدير البيانات');
+});
+
+importDataBtn.addEventListener('click', ()=>{
+    const input = document.createElement('input'); input.type='file'; input.accept='.json';
+    input.onchange = e=>{
+        const file = e.target.files[0]; const reader = new FileReader();
+        reader.onload = ev=>{
+            try{
+                const data = JSON.parse(ev.target.result);
+                if(data.users && data.surveys){ if(confirm('هل تريد استبدال البيانات الحالية؟')){ users = data.users; surveys = data.surveys; archivedUsers = data.archivedUsers||{}; Object.keys(users).forEach(u=>{ if(!surveys[u]) surveys[u] = initSurveysStructure(); else if(!Array.isArray(surveys[u]) || surveys[u].length!==PAGES) surveys[u] = migrateLegacyObject(surveys[u]); }); saveData(); renderEmployeeTables(); renderAdminOverview(currentAdminPage); updateEmployeesDisplay(); updateStats(); alert('تم استيراد البيانات'); } }
+                else alert('ملف غير صالح');
+            }catch(err){ alert('خطأ في قراءة الملف'); }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
+});
+
+resetSystemBtn.addEventListener('click', ()=>{
+    if(confirm('إعادة ضبط ستقوم بحذف كل البيانات؟')){
+        localStorage.clear(); users = {"admin":{password:"admin123",role:"admin",fullName:"المسؤول العام",joinDate:new Date().toLocaleDateString('ar-EG')},"employee":{password:"employee123",role:"employee",fullName:"موظف تجريبي",joinDate:new Date().toLocaleDateString('ar-EG')}}; surveys={}; surveys['default']=initSurveysStructure(); Object.keys(users).forEach(u=>{ if(u!=='default') surveys[u]=initSurveysStructure(); }); archivedUsers={}; currentUser=null; saveData(); renderEmployeeTables(); renderAdminOverview(currentAdminPage); updateEmployeesDisplay(); updateStats(); activateTab('login'); alert('تم إعادة الضبط'); }
+});
+
+/* --- تهيئة التطبيق --- */
+function initApp(){
+    loadData();
+    Object.keys(users).forEach(u=>{ if(!surveys[u]) surveys[u]=initSurveysStructure(); else if(!Array.isArray(surveys[u]) || surveys[u].length!==PAGES) surveys[u]=migrateLegacyObject(surveys[u]); });
+    buildPageTabs(employeePageTabs, (p)=> switchEmployeePage(p));
+    buildPageTabs(adminPageTabs, (p)=>{ currentAdminPage = p; renderAdminOverview(p); });
+    renderEmployeeTables(); renderAdminOverview(currentAdminPage); updateEmployeesDisplay(); updateStats(); startAutoSave();
+}
+function startAutoSave(){ if(autoSaveTimer) clearInterval(autoSaveTimer); autoSaveTimer = setInterval(()=> saveData(), 30000); }
+
+function switchEmployeePage(p){ currentEmployeePage = p; for(let i=0;i<PAGES;i++){ const el = document.getElementById(`employee-page-${i}`); if(el) el.style.display = (i===p)?'block':'none'; } markActivePageTabs(employeePageTabs, p); }
+
+window.onload = initApp;
+</script>
+</body>
+</html>
